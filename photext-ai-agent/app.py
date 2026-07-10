@@ -5,9 +5,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = Flask(__name__)
-orchestrator = OrchestratorAgent()
+from models.database import db
+from models.image_record import ImageRecord
 
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI', 'sqlite:///app.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
+
+orchestrator = OrchestratorAgent()
 @app.route('/')
 def index():
     gemini_key = os.environ.get("GEMINI_KEY", "")
@@ -17,7 +26,14 @@ def index():
 def upload_image():
     # TODO: Handle file upload and pass path to orchestrator
     image_path = "mock/path/to/image.jpg"
+    
+    # Log to DB
+    new_record = ImageRecord(original_image_path=image_path)
+    db.session.add(new_record)
+    db.session.commit()
+    
     result = orchestrator.process_initial_upload(image_path)
+    result["record_id"] = new_record.id
     return jsonify(result)
 
 @app.route('/edit', methods=['POST'])
