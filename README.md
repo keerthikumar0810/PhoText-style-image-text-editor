@@ -10,7 +10,9 @@ flowchart TD
     OA --> OCR[OCR Agent]
     OA --> FA[Font Agent]
     OA --> IA[Image Agent]
-    OCR & FA & IA --> EA[Editing Agent]
+    OCR --> EA[Editing Agent]
+    FA --> EA
+    IA --> EA
     EA --> EX[Export Agent]
     EX --> FO[Final Output]
 ```
@@ -20,16 +22,18 @@ flowchart TD
 ```mermaid
 flowchart TD
     U[User Uploads Image] --> OA[Orchestrator Agent]
-    OA --> OCR[OCR Agent: Detect Text Bounding Boxes]
-    OA --> FA[Font Agent: Detect Fonts & Colors]
-    OA --> IA[Image Editor Agent: Create Canvas & Overlay Layers]
-    OCR & FA & IA --> EW[Editing Workflow]
+    OA --> OCR["OCR Agent: Detect Text Bounding Boxes"]
+    OA --> FA["Font Agent: Detect Fonts & Colors"]
+    OA --> IA["Image Editor Agent: Create Canvas & Overlay Layers"]
+    OCR --> EW[Editing Workflow]
+    FA --> EW
+    IA --> EW
     EW --> US[User Selects Text Region]
-    US --> RM[Replace / Move / Resize]
+    US --> RM["Replace / Move / Resize"]
     RM --> AS[Apply Font Styling]
     AS --> BR[Background Recovery]
     BR --> LC[Live Canvas Update]
-    LC --> EX[Export Agent: JPG / PNG / PDF Output]
+    LC --> EX["Export Agent: JPG / PNG / PDF Output"]
     EX --> DL[Download Image]
 ```
 
@@ -106,7 +110,10 @@ flowchart TD
     RO --> FA[Font Agent]
     RO --> EA[Edit Agent]
     RO --> EX[Export Agent]
-    OCR & FA & EA & EX --> SS[Shared Session State]
+    OCR --> SS[Shared Session State]
+    FA --> SS
+    EA --> SS
+    EX --> SS
     SS --> IP[Image Processing Tools]
     IP --> FO[Final Download Output]
 ```
