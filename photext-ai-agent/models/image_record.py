@@ -1,11 +1,13 @@
+from sqlalchemy.orm import Mapped, mapped_column
+from typing import Optional
 from models.database import db
 from datetime import datetime
 
 class ImageRecord(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    original_image_path = db.Column(db.String(255), nullable=False)
-    edited_image_path = db.Column(db.String(255), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    original_image_path: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    edited_image_path: Mapped[Optional[str]] = mapped_column(db.String(255), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
 
     def to_dict(self):
         return {
